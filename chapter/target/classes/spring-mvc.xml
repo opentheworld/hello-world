@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" 
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="   
+    http://www.springframework.org/schema/beans   
+    http://www.springframework.org/schema/beans/spring-beans.xsd   
+    http://www.springframework.org/schema/context   
+    http://www.springframework.org/schema/context/spring-context.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.1.xsd
+    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.1.xsd
+    http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.1.xsd">
+	
+	 <!-- aop支持  如果记录Controller aop配置必须写到spring mvc的xml中，如果记录service aop 配置要写到 spring主配置文件-->
+	<!-- <aop:aspectj-autoproxy proxy-target-class="true"/> -->
+	
+	 <!-- 只能用于springMVC,用于配置springMVC的注解驱动 -->  
+     <mvc:annotation-driven />  
+     <!-- 把标记了@Controller注解的类转换为bean -->    
+     <context:component-scan base-package="com.smart.web" />    
+      
+     <mvc:view-controller path="/" view-name="redirect:/index"/>
+      
+    <!-- 对某些静态资源，如css,图片等进行过滤 ,有引用 "/resources/**" 的路径引用转到工程的/resources/目录取资源 -->
+	<mvc:resources mapping="/resources/**" location="/resources/" />
+	
+	
+    <!-- 跳转视图配置 -->
+    <!-- 对模型视图名称的解析，即在模型视图名称添加前后缀 -->
+	<bean name="jspViewResolver" 
+	      class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass"><!-- 跳转到JSP的视图 -->
+			<value>org.springframework.web.servlet.view.JstlView</value>
+		</property>
+		<!-- 相关JSP页面路径配置 -->
+		<property name="prefix" value="/WEB-INF/views/" /><!-- JSP页面前缀 -->	
+		<property name="suffix" value=".jsp"/><!-- JSP页面后缀 -->
+		 <property name="order" value="1"/> 
+	</bean>
+    
+	<!-- <bean id="ftlViewResolver" class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">  
+        <property name="viewClass" value="org.springframework.web.servlet.view.freemarker.FreeMarkerView"/>  
+        <property name="contentType" value="text/html; charset=utf-8"/>  
+        <property name="cache" value="true" />  
+        <property name="suffix" value=".ftl" /> 
+        <property name="order" value="0"/>         
+    </bean> -->
+    
+    <!-- 配置freeMarker的模板路径 -->  
+    <!-- <bean id="freemarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">  
+        <property name="templateLoaderPath">  
+            <value>/WEB-INF/ftl/</value>
+        </property>
+        <property name="defaultEncoding">  
+            <value>utf-8</value>  
+        </property>  
+        <property name="freemarkerSettings">  
+            <props>  
+                <prop key="template_update_delay">3600</prop>  
+                <prop key="number_format">0.##########</prop>
+                <prop key="datetime_format">yyyy-MM-dd HH:mm:ss</prop>
+                <prop key="classic_compatible">true</prop>
+                <prop key="template_exception_handler">ignore</prop>
+            </props>  
+        </property>        
+    </bean> -->
+    
+	<!-- 
+		设置全局异常处理方式。！注意，如果使用XML配置了异常处理方式，
+		那么使用Annotation处理异常的方式将不再被使用。 
+	-->
+	<!-- 这里的errorPage同样应用viewResolver的前缀、后缀匹配 -->	 
+	<!-- <bean name="exceptionResolver" 
+	      class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<property name="exceptionMappings">
+			<props>				
+				<prop key="java.lang.Exception">errorPage</prop>
+			</props>
+		</property>
+	</bean> -->
+	
+</beans>

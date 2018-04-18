@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" 
+	xmlns:cache="http://www.springframework.org/schema/cache" 
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd 
+	http://www.springframework.org/schema/tx 
+	http://www.springframework.org/schema/tx/spring-tx.xsd 
+	http://www.springframework.org/schema/context 
+	http://www.springframework.org/schema/context/spring-context.xsd 
+	http://www.springframework.org/schema/aop 
+	http://www.springframework.org/schema/aop/spring-aop.xsd 
+	http://www.springframework.org/schema/cache 
+	http://www.springframework.org/schema/cache/spring-cache.xsd">
+	
+    <context:component-scan base-package="com.smart.service" annotation-config="true">
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+	</context:component-scan> 
+	
+	<context:component-scan base-package="com.smart.dao" annotation-config="true">
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+	</context:component-scan> 
+	 
+
+    <!-- 使用注释的基础配置 -->
+	<context:annotation-config />
+	
+	<!-- 应用属性文件读入 -->
+    <bean id="propertyConfigurer"  
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" lazy-init="true"> 
+		<property name="ignoreResourceNotFound" value="false" /> 
+		<property name="locations">
+			<list>  
+				<value>classpath:application.properties</value>
+			</list>  
+		</property>  
+	</bean>
+	
+	<!-- proxool 配置datasour数据源  -->
+	 <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
+	 	<property name="driverClassName" value="${jdbc.driverClassName}"></property>
+	 	<property name="url" value="${jdbc.url}"></property>
+	 	<property name="username" value="${jdbc.username}"></property>
+	 	<property name="password" value="${jdbc.password}"></property>
+	 	<!-- 空闲连接个数 默认为0 --> 	 
+		<property name="initialSize" value="4" />		
+		<!--最小连接数(默认5个) -->	
+	 	<property name="minIdle" value="${jdbc.minnum}"></property>	 	
+	 	<!--最大连接数(默认15个),超过了这个连接数,再有请求时,就排在队列中等候,最大的等待请求数由maximum-new-connections决定 -->	 	
+	 	<property name="maxIdle" value="${jdbc.maxnum}"></property> 
+	 </bean>
+	 
+	<!-- ================================ MyBatis SqlSession配置 ========================================= -->
+	<!-- 使用SqlSessionFactoryBean工厂产生SqlSession对象，方便后期注入Dao -->
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource" ref="dataSource" />
+		<!-- <property name="configLocation" value="classpath:mybatis-config.xml"></property> -->
+	</bean>
+	
+	
+	<!-- ================================= 事务控制相关 ============================================= -->
+   	<bean name="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">   
+    	<property name="dataSource" ref="dataSource"></property>
+ 	</bean>   
+	
+	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="*"/>
+		</tx:attributes>
+	</tx:advice>
+	<aop:config proxy-target-class="true">
+		<aop:pointcut expression=" execution(* com.smart.service..*(..))" id="serviceMethod"/>
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="serviceMethod"/>
+	</aop:config>
+
+	
+	
+    
+</beans>

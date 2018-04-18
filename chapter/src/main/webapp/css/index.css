@@ -1,0 +1,26 @@
+/*总体布局*/
+*{margin:0;padding:0;}
+#main{margin:10px auto;width:80%;}
+#head{background-color: white;height:100px;padding:20px auto;border-bottom:1px solid #ccc;}
+#left{background-color: #cfd;width:200px;height:800px;float:left;}
+#center{background-color: #ccc;width:100%;height:800px;}
+#foot{background-color: green;width:100%;height:50px;}
+
+/*标签样式管理*/
+#head nav .tip{text-decoration:none;padding:2px 10px;border-radius:4px;margin:5px auto;}
+#head nav .tip:hover{background-color:pink;border:1px solid black;}
+#head nav a img{height:40px;}
+#head p {margin:0px 30px 15px 15px;padding-right:10px;}
+#head nav{margin-left:300px;height:40px;}
+
+.login{position:relative;left:700px;}
+.menu{background-color:orange;}
+.menu nav{padding-top:10px;}
+
+
+/*id="left"样式*/
+#left ul li{list-style:none;margin:10px 15px;}
+#left p{padding-left:15px;border-bottom:2px solid #ccc;color:#2ac;}
+
+/*id="center"样式*/
+iframe{width:875px;height:800px;border:none;}
